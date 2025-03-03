@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Clinic Wait Times</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+        <style>
+            body {
+                background-color: #1E3A8A; /* Dark blue background */
+                color: white;
+                font-family: Arial, sans-serif;
+                text-align: center;
+                padding: 20px;
+            }
+            .header {
+                display: flex;
+                align-items: center;
+                justify-content: start;
+                padding: 10px;
+            }
+            .header img {
+                height: 60px;
+                margin-right: 20px;
+            }
+            .container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                max-width: 600px;
+                margin: auto;
+            }
+            .wait-time {
+                background: rgba(255, 255, 255, 0.2);
+                padding: 15px;
+                border-radius: 10px;
+                font-size: 1.5em;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <img src="{{ url_for('static', filename='Concentra_Logo.jpg') }}" alt="Concentra Logo">
+            <h1>Clinic Wait Times</h1>
+        </div>
+        <div class="container">
+            <div class="wait-time">Injuries: <span id="injuries">--</span> min</div>
+            <div class="wait-time">Injury Rechecks: <span id="injury-rechecks">--</span> min</div>
+            <div class="wait-time">Physicals: <span id="physicals">--</span> min</div>
+            <div class="wait-time">Drug Screens: <span id="drug-screens">--</span> min</div>
+            <div class="wait-time">Urgent Care: <span id="urgent-care">--</span> min</div>
+        </div>
+
+        <script>
+            var socket = io();
+
+            socket.on("updated_wait_times", function(data) {
+                document.getElementById("injuries").innerText = data.injuries;
+                document.getElementById("injury-rechecks").innerText = data.injury_rechecks;
+                document.getElementById("physicals").innerText = data.physicals;
+                document.getElementById("drug-screens").innerText = data.drug_screens;
+                document.getElementById("urgent-care").innerText = data.urgent_care;
+            });
+
+            // Fetch initial data on page load
+            fetch("/wait_times_data")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("injuries").innerText = data.injuries;
+                    document.getElementById("injury-rechecks").innerText = data.injury_rechecks;
+                    document.getElementById("physicals").innerText = data.physicals;
+                    document.getElementById("drug-screens").innerText = data.drug_screens;
+                    document.getElementById("urgent-care").innerText = data.urgent_care;
+                })
+                .catch(error => console.error("Error fetching wait times:", error));
+        </script>
+    </body>
+</html>
+        

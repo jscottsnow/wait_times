@@ -1,0 +1,7 @@
+<form action="{{ url_for('update_wait_time', category='physicals')}}" method="post">
+    <h1>Physicals Wait Time</h1>
+    <p> Current wait time: {{ physicals_wait_time }} minutes</p>
+    <input id="new-wait-time" name="physicals_wait_time" type="text" placeholder="Enter new wait time">
+    <button type="submit">Update Wait Time</button>
+</form>
+<a href="{{url_for('index')}}">Main Menu </a>
